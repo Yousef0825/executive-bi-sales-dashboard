@@ -1,0 +1,39 @@
+// ========================================================
+// CORE REVENUE & MARGIN MEASURES
+// ========================================================
+
+Total Revenue = SUM(FactSales[SalesAmount])
+
+Total Profit = SUM(FactSales[ProfitAmount])
+
+Gross Margin % = 
+DIVIDE([Total Profit], [Total Revenue], 0)
+
+// ========================================================
+// TIME INTELLIGENCE CALCULATIONS
+// ========================================================
+
+Revenue YTD = 
+CALCULATE(
+    [Total Revenue],
+    DATESYTD(DimDate[Date])
+)
+
+Revenue Previous Month (MoM) = 
+CALCULATE(
+    [Total Revenue],
+    DATEADD(DimDate[Date], -1, MONTH)
+)
+
+MoM Revenue Growth % = 
+VAR Prev = [Revenue Previous Month (MoM)]
+VAR Curr = [Total Revenue]
+RETURN
+DIVIDE(Curr - Prev, Prev, 0)
+
+// ========================================================
+// CONDITIONAL KPI STATUS
+// ========================================================
+
+Margin Health Status = 
+IF([Gross Margin %] >= 0.18, "On Target", "Underperforming")
